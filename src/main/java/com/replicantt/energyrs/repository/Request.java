@@ -1,4 +1,4 @@
-package com.replicantt.energyrequestsystem.repository;
+package com.replicantt.energyrs.repository;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -17,15 +17,14 @@ import lombok.Setter;
 @Setter
 public class Request {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
     private Long customerId;
     private String type;
     private String action;
 
-    public Request(Long id, Long customerId, String type, String action) {
+    public Request(String id, Long customerId, String type, String action) {
         this.id = id;
         this.customerId = customerId;
         this.type = type;
