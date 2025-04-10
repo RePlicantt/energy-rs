@@ -1,4 +1,4 @@
-package com.replicantt.energyrequestsystem.repository;
+package com.replicantt.energyrs.repository;
 
 import java.time.LocalDate;
 

@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.replicantt.energyrs.repository.Customer;
 import com.replicantt.energyrs.service.CustomerService;
 
+@RestController
 public class CustomerController {
 
     private final CustomerService customerService;
