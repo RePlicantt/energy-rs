@@ -4,8 +4,10 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,6 +16,7 @@ import com.replicantt.energyrs.service.RequestService;
 
 @RestController
 public class RequestController {
+
     private final RequestService requestService;
     public RequestController(RequestService requestService) {
         this.requestService = requestService;
@@ -23,12 +26,14 @@ public class RequestController {
     public List<Request> findAll() {
         return requestService.getAllRequests();
     }
+
     @PostMapping("/requests")
-    public Request addRequest(Request request) {
+    public Request addRequest(@RequestBody Request request) {
         return requestService.addRequest(request);
     }
+
     @DeleteMapping("/requests/{id}")
-    public void deleteRequest(Long id) {
+    public void deleteRequest(@PathVariable String id) {
         requestService.deleteRequest(id);
     }
 

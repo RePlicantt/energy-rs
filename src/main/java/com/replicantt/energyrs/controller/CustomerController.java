@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,7 +17,6 @@ import com.replicantt.energyrs.service.CustomerService;
 
 @RestController
 public class CustomerController {
-
     private final CustomerService customerService;
     public CustomerController(CustomerService customerService) {
         this.customerService = customerService;
@@ -28,12 +28,12 @@ public class CustomerController {
     }
 
     @PostMapping("/customers")
-    public Customer addCustomer(Customer customer) {
+    public Customer addCustomer(@RequestBody Customer customer) {
         return customerService.addCustomer(customer);
     }
 
     @DeleteMapping("/customers/{id}")
-    public void deleteCustomer(Long id) {
+    public void deleteCustomer(@PathVariable Long id) {
         customerService.deleteCustomer(id);
     }
 
