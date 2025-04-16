@@ -1,5 +1,9 @@
 package com.replicantt.energyrs.repository;
 
+import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
@@ -23,12 +27,19 @@ public class Request {
     
     private String type;
     private String action;
+    @Column(updatable = false, columnDefinition = "varchar(255) default 'Submitted'")
+    private String status;
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
-    public Request(String id, Long customerId, String type, String action) {
+    public Request(String id, Long customerId, String type, String action, String status, LocalDateTime createdAt) {
         this.id = id;
         this.customerId = customerId;
         this.type = type;
         this.action = action;
+        this.status = status;
+        this.createdAt = createdAt;
     }
 
     public Request() {
