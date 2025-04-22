@@ -28,7 +28,10 @@ public class RequestController {
     }
 
     @PostMapping("/requests")
-    public Request addRequest(@RequestBody Request request) {
+    public Request addRequest(@RequestBody Request request) {     
+        if (request.getStatus() == null) {
+            request.setStatus(Request.EnumStatus.SUBMITTED);  // если статус не передан, устанавливаем по умолчанию
+        }
         return requestService.addRequest(request);
     }
 
