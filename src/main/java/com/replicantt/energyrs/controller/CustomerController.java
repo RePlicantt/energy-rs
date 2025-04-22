@@ -26,7 +26,7 @@ public class CustomerController {
     public List<Customer> findAll() {
         return customerService.getAllCustomers();
     }
-
+ 
     @PostMapping("/customers")
     public Customer addCustomer(@RequestBody Customer customer) {
         return customerService.addCustomer(customer);
