@@ -2,6 +2,7 @@ package com.replicantt.energyrs.controller;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,11 +29,12 @@ public class RequestController {
     }
 
     @PostMapping("/requests")
-    public Request addRequest(@RequestBody Request request) {     
+    public ResponseEntity<Void> addRequest(@RequestBody Request request) {     
         if (request.getStatus() == null) {
             request.setStatus(Request.EnumStatus.SUBMITTED);  // если статус не передан, устанавливаем по умолчанию
         }
-        return requestService.addRequest(request);
+        requestService.addRequest(request);
+        return ResponseEntity.status(201).build(); // 201 Created
     }
 
     @DeleteMapping("/requests/{id}")
