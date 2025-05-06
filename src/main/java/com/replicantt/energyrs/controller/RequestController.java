@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.replicantt.energyrs.DTO.RequestDTO;
 import com.replicantt.energyrs.repository.Request;
 import com.replicantt.energyrs.service.RequestService;
+
+import jakarta.validation.Valid;
 
 @RestController
 public class RequestController {
@@ -29,12 +32,9 @@ public class RequestController {
     }
 
     @PostMapping("/requests")
-    public ResponseEntity<Void> addRequest(@RequestBody Request request) {     
-        if (request.getStatus() == null) {
-            request.setStatus(Request.EnumStatus.SUBMITTED);  // если статус не передан, устанавливаем по умолчанию
-        }
-        requestService.addRequest(request);
-        return ResponseEntity.status(201).build(); // 201 Created
+    public ResponseEntity<Void> addRequest(@Valid @RequestBody RequestDTO requestDTO) {     
+        requestService.addRequest(requestDTO);
+        return ResponseEntity.status(201).build(); // Возвращаем 201 Created, если запрос успешно добавлен
     }
 
     @DeleteMapping("/requests/{id}")

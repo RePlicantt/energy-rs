@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.replicantt.energyrs.DTO.RequestDTO;
 import com.replicantt.energyrs.repository.Request;
 import com.replicantt.energyrs.repository.RequestIdState;
 import com.replicantt.energyrs.repository.RequestIdStateRepository;
@@ -34,7 +35,7 @@ public class RequestService {
         return requestRepository.findAll();
     }
     @Transactional
-    public Request addRequest(Request request) {
+    public Request addRequest(RequestDTO requestDTO) {
         // Загружаем текущее состояние ID (один запрос вместо двух)
         RequestIdState idState = requestIdStateRepository.findById("current_state")
             .orElseThrow(() -> new RuntimeException("Request ID state not found"));
@@ -43,19 +44,34 @@ public class RequestService {
         this.currentNumber = idState.getCurrentNumber();
 
         String generatedId = generateRequestId();
-        request.setId(generatedId); // Устанавливаем сгенерированный ID в запрос
+        requestDTO.setId(generatedId); // Устанавливаем сгенерированный ID в запрос
 
-        if (!request.getType().equals("electricity") && !request.getType().equals("gas")) {
+        if (!requestDTO.getType().equals("electricity") && !requestDTO.getType().equals("gas")) {
             throw new RuntimeException("Invalid type. Must be 'electricity' or 'gas'.");
         }
-        if (!request.getAction().equals("connection") && !request.getAction().equals("shutdown")) {
+        if (!requestDTO.getAction().equals("connection") && !requestDTO.getAction().equals("shutdown")) {
             throw new RuntimeException("Invalid type. Must be 'connection' or 'shutdown'.");
+        }
+        if (requestDTO.getStatus() == null) {
+            requestDTO.setStatus("SUBMITTED"); // Устанавливаем статус по умолчанию
+        } else {
+            try {
+                Request.EnumStatus.valueOf(requestDTO.getStatus());
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException("Invalid status. Must be one of: SUBMITTED, IN_PROGRESS, COMPLETED, REJECTED, CANCELLED.");
+            }
         }
 
         idState.setCurrentLetter(this.currentLetter);
         idState.setCurrentNumber(this.currentNumber);
 
-        return requestRepository.save(request);
+        return requestRepository.save(Request.builder()
+            .id(generatedId)
+            .customerId(requestDTO.getCustomerId())
+            .type(requestDTO.getType())
+            .action(requestDTO.getAction())
+            .status(Request.EnumStatus.valueOf(requestDTO.getStatus()))
+            .build());
     }
 
     public void deleteRequest(String id) {
