@@ -1,6 +1,6 @@
 package com.replicantt.energyrs.repository;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -22,7 +22,7 @@ public class Connection {
     private EnumRequestType type;
     @Enumerated(EnumType.STRING)
     private EnumStatus status;
-    private LocalDateTime connectionDate;
+    private LocalDate connectionDate;
 
     public Connection(String dependedRequestId, String meterId, EnumRequestType type, EnumStatus status) {
         this.dependedRequestId = dependedRequestId;

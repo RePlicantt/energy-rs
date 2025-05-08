@@ -34,6 +34,11 @@ public class RequestService {
     public List<Request> getAllRequests() {
         return requestRepository.findAll();
     }
+
+    public Request getRequestById(String id) {
+        return requestRepository.findById(id).orElseThrow(() -> new RuntimeException("Request not found"));
+    }
+
     @Transactional
     public Request addRequest(RequestDTO requestDTO) {
         // Загружаем текущее состояние ID (один запрос вместо двух)
@@ -65,16 +70,22 @@ public class RequestService {
         idState.setCurrentLetter(this.currentLetter);
         idState.setCurrentNumber(this.currentNumber);
 
-        return requestRepository.save(Request.builder()
+        Request requestToSave = Request.builder()
             .id(generatedId)
             .customerId(requestDTO.getCustomerId())
             .type(requestDTO.getType())
             .action(requestDTO.getAction())
             .status(Request.EnumStatus.valueOf(requestDTO.getStatus()))
-            .build());
+            .build();
+
+        return requestRepository.save(requestToSave);
     }
 
     public void deleteRequest(String id) {
+        // Проверяем, существует ли запрос с таким ID
+        if (!requestRepository.existsById(id)) {
+            throw new RuntimeException("Request not found with ID: " + id);
+        }
         requestRepository.deleteById(id);
     }
 
@@ -106,13 +117,13 @@ public class RequestService {
         return requestId;
     }
 
-    public void updateRequest(String id, String type, String action) {
+    public Request updateRequest(String id, String type, String action) {
         Request request = requestRepository.findById(id).orElseThrow(() -> new RuntimeException("Request not found"));
         
         request.setType(type);
         request.setAction(action);
 
-        requestRepository.save(request);
+        return requestRepository.save(request);
     }
 
     private char getNextLetter(char currentLetter) {

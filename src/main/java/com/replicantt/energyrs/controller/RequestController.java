@@ -31,6 +31,17 @@ public class RequestController {
         return requestService.getAllRequests();
     }
 
+    @GetMapping("/requests/{id}")
+    public ResponseEntity<Request> findById(@PathVariable String id) {
+        Request request = requestService.getRequestById(id);
+        if (request != null) {
+            return ResponseEntity.ok(request); // Возвращаем 200 OK с найденным запросом
+        } else {
+            return ResponseEntity.notFound().build(); // Возвращаем 404 Not Found, если запрос не найден
+        }
+    }
+
+
     @PostMapping("/requests")
     public ResponseEntity<Void> addRequest(@Valid @RequestBody RequestDTO requestDTO) {     
         requestService.addRequest(requestDTO);
@@ -38,16 +49,27 @@ public class RequestController {
     }
 
     @DeleteMapping("/requests/{id}")
-    public void deleteRequest(@PathVariable String id) {
-        requestService.deleteRequest(id);
+    public ResponseEntity<Void> deleteRequest(@PathVariable String id) {
+        try {
+            requestService.deleteRequest(id);
+            return ResponseEntity.noContent().build(); // Возвращаем 204 No Content, если запрос успешно удален
+        } catch (RuntimeException  e) {
+            return ResponseEntity.notFound().build(); // Возвращаем 404 Not Found, если запрос не найден
+        }
     }
 
     @PutMapping("/requests/{id}")
-    public void updateRequest(
-        @RequestParam(required = true) String id,
+    public ResponseEntity<Void> updateRequest(
+        @PathVariable(required = true) String id,
         @RequestParam(required = true) String type,
         @RequestParam(required = true) String action
     ) {
-        requestService.updateRequest(id, type, action);
+        Request request = requestService.getRequestById(id);
+        if (request != null) {
+            requestService.updateRequest(id, type, action);
+            return ResponseEntity.ok().build(); // Возвращаем 200 OK, если запрос успешно обновлен
+        } else {
+            return ResponseEntity.notFound().build(); // Возвращаем 404 Not Found, если запрос не найден
+        }
     }
 }
