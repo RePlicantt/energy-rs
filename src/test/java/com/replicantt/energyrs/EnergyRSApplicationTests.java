@@ -1,10 +1,10 @@
-package com.replicantt.energyrequestsystem;
+package com.replicantt.energyrs;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class EnergyrequestsystemApplicationTests {
+class EnergyRSApplicationTests {
 
 	@Test
 	void contextLoads() {
