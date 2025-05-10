@@ -41,13 +41,7 @@ public class RequestService {
 
     @Transactional
     public Request addRequest(RequestDTO requestDTO) {
-        // Загружаем текущее состояние ID (один запрос вместо двух)
-        RequestIdState idState = requestIdStateRepository.findById("current_state")
-            .orElseThrow(() -> new RuntimeException("Request ID state not found"));
-
-        this.currentLetter = idState.getCurrentLetter();
-        this.currentNumber = idState.getCurrentNumber();
-
+        
         String generatedId = generateRequestId();
         requestDTO.setId(generatedId); // Устанавливаем сгенерированный ID в запрос
 
@@ -67,8 +61,7 @@ public class RequestService {
             }
         }
 
-        idState.setCurrentLetter(this.currentLetter);
-        idState.setCurrentNumber(this.currentNumber);
+        
 
         Request requestToSave = Request.builder()
             .id(generatedId)
@@ -82,7 +75,7 @@ public class RequestService {
     }
 
     public void deleteRequest(String id) {
-        // Проверяем, существует ли запрос с таким ID
+
         if (!requestRepository.existsById(id)) {
             throw new RuntimeException("Request not found with ID: " + id);
         }
@@ -91,6 +84,19 @@ public class RequestService {
 
     @Transactional
     public String generateRequestId(){
+        // Загружаем текущее состояние ID
+        RequestIdState idState = requestIdStateRepository.findById("current_state")
+            .orElseThrow(() -> new RuntimeException("Request ID state not found"));
+
+        this.currentLetter = idState.getCurrentLetter();
+        this.currentNumber = idState.getCurrentNumber();
+        
+        // Если достигнут лимит (999999), сбрасываем число и увеличиваем букву
+        if (currentNumber > MAX_NUMBER) {
+            currentNumber = 1;
+            currentLetter = getNextLetter(currentLetter);
+        }
+        
         // Формируем строку с текущей буквой и номером
         String formattedNumber = String.format(SUFFIX_FORMAT, currentNumber);
         // Генерируем ID в формате RQ{буква}-{номер}
@@ -107,12 +113,9 @@ public class RequestService {
         // Обновляем номер
         currentNumber++;
 
-        // Если достигнут лимит (999999), сбрасываем число и увеличиваем букву
-        if (currentNumber > MAX_NUMBER) {
-            currentNumber = 1;
-            currentLetter = getNextLetter(currentLetter);
-        }
 
+        idState.setCurrentLetter(this.currentLetter);
+        idState.setCurrentNumber(this.currentNumber);
 
         return requestId;
     }

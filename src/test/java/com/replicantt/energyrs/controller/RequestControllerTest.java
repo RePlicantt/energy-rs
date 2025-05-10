@@ -26,7 +26,6 @@ import java.time.LocalDateTime;
 import com.replicantt.energyrs.repository.Request;
 import com.replicantt.energyrs.service.RequestService;
 
-// TODO сделать тесты на все сущности и crud операции
 @ExtendWith(MockitoExtension.class)
 class RequestControllerTest {
 
@@ -40,7 +39,7 @@ class RequestControllerTest {
 
     @BeforeEach
     void setUp() {
-        // Initialize MockMvc with the RequestController
+        // Инициализация MockMvc с контроллером и валидатором
         mockMvc = MockMvcBuilders
             .standaloneSetup(requestController)
             .setValidator(new LocalValidatorFactoryBean())
