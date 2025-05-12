@@ -13,6 +13,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -24,6 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import java.time.LocalDateTime;
 
 import com.replicantt.energyrs.repository.Request;
+import com.replicantt.energyrs.repository.Request.EnumStatus;
 import com.replicantt.energyrs.service.RequestService;
 
 @ExtendWith(MockitoExtension.class)
@@ -144,14 +146,18 @@ class RequestControllerTest {
         String requestId = "RQA-000001";
         String type = "electricity";
         String action = "connection";
+        String status = "CANCELLED";
 
         when(requestService.getRequestById(requestId)).thenReturn(mockRequest);
 
         mockMvc.perform(put("/requests/" + requestId)
                 .param("type", type)
                 .param("action", action)
+                .param("status", status)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+
+        verify(requestService).updateRequest(requestId, type, action, EnumStatus.CANCELLED);
     }
 
 }

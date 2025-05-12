@@ -2,6 +2,7 @@ package com.replicantt.energyrs.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -16,6 +17,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.replicantt.energyrs.repository.Request;
+import com.replicantt.energyrs.repository.Request.EnumStatus;
+import com.replicantt.energyrs.DTO.RequestDTO;
 import com.replicantt.energyrs.repository.RequestIdState;
 import com.replicantt.energyrs.repository.RequestIdStateRepository;
 import com.replicantt.energyrs.repository.RequestRepository;
@@ -32,7 +35,7 @@ public class RequestServiceTest {
     private RequestService requestService;
 
     @Test
-    void getAllRequestsTest() {
+    void testGetAllRequests() {
         // Mock the behavior of requestRepository.findAll() to return a list of requests
         when(requestRepository.findAll()).thenReturn(List.of(new Request(), new Request()));
         
@@ -48,7 +51,7 @@ public class RequestServiceTest {
     }
 
     @Test
-    void getRequestByIdTest() {
+    void testGetRequestByIdTest() {
         Request mockRequest = new Request();
         mockRequest.setId("RQA-000001");
         mockRequest.setCustomerId((long) 6);
@@ -117,6 +120,60 @@ public class RequestServiceTest {
         assertEquals("RQH-625476", result2);
         assertEquals(625477, mockRequestIdState.getCurrentNumber());
         assertEquals('H', mockRequestIdState.getCurrentLetter());
+    }
+
+    @Test
+    void testAddRequest() {
+        RequestIdState mockRequestIdState = new RequestIdState();
+        mockRequestIdState.setCurrentLetter('A');
+        mockRequestIdState.setCurrentNumber(1);
+
+        RequestDTO mockRequestDTO = new RequestDTO();
+        mockRequestDTO.setCustomerId((long) 6);
+        mockRequestDTO.setType("gas");
+        mockRequestDTO.setAction("shutdown");
+        mockRequestDTO.setStatus(null);
+        LocalDateTime testCreatedAt = LocalDateTime.of(2023, 10, 1, 12, 0, 0);
+        mockRequestDTO.setCreatedAt(testCreatedAt);
+
+        when(requestIdStateRepository.findById("current_state")).thenReturn(Optional.of(mockRequestIdState));
+        when(requestRepository.save(any(Request.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Request result = requestService.addRequest(mockRequestDTO);
+
+        assertEquals("RQA-000001", result.getId());
+        assertEquals(6L, result.getCustomerId());
+        assertEquals("gas", result.getType());
+        assertEquals("shutdown", result.getAction());
+        assertEquals(Request.EnumStatus.SUBMITTED, result.getStatus());
+        assertEquals(testCreatedAt, result.getCreatedAt());
+
+    }
+
+    @Test
+    void testUpdateRequest() {
+        Request mockRequest = new Request();
+        mockRequest.setId("RQA-000001");
+        mockRequest.setCustomerId((long) 6);
+        mockRequest.setType("gas");
+        mockRequest.setAction("shutdown");
+        mockRequest.setStatus(null);
+        LocalDateTime testCreatedAt = LocalDateTime.of(2023, 10, 1, 12, 0, 0);
+        mockRequest.setCreatedAt(testCreatedAt);
+
+        when(requestRepository.findById("RQA-000001")).thenReturn(Optional.of(mockRequest));
+        when(requestRepository.save(any(Request.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Request result = requestService.updateRequest(
+            "RQA-000001", "electricity", "connection", EnumStatus.CANCELLED
+            );
+        
+        assertEquals("RQA-000001", result.getId());
+        assertEquals(6L, result.getCustomerId());
+        assertEquals("electricity", result.getType());
+        assertEquals("connection", result.getAction());
+        assertEquals(Request.EnumStatus.CANCELLED, result.getStatus());
+        assertEquals(testCreatedAt, result.getCreatedAt());
     }
 
 

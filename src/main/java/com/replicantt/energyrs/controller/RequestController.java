@@ -62,11 +62,12 @@ public class RequestController {
     public ResponseEntity<Void> updateRequest(
         @PathVariable(required = true) String id,
         @RequestParam(required = true) String type,
-        @RequestParam(required = true) String action
+        @RequestParam(required = true) String action,
+        @RequestParam(required = false) Request.EnumStatus status
     ) {
         Request request = requestService.getRequestById(id);
         if (request != null) {
-            requestService.updateRequest(id, type, action);
+            requestService.updateRequest(id, type, action, status);
             return ResponseEntity.ok().build(); // Возвращаем 200 OK, если запрос успешно обновлен
         } else {
             return ResponseEntity.notFound().build(); // Возвращаем 404 Not Found, если запрос не найден

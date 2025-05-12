@@ -61,14 +61,13 @@ public class RequestService {
             }
         }
 
-        
-
         Request requestToSave = Request.builder()
             .id(generatedId)
             .customerId(requestDTO.getCustomerId())
             .type(requestDTO.getType())
             .action(requestDTO.getAction())
             .status(Request.EnumStatus.valueOf(requestDTO.getStatus()))
+            .createdAt(requestDTO.getCreatedAt())
             .build();
 
         return requestRepository.save(requestToSave);
@@ -120,11 +119,12 @@ public class RequestService {
         return requestId;
     }
 
-    public Request updateRequest(String id, String type, String action) {
+    public Request updateRequest(String id, String type, String action, Request.EnumStatus status) {
         Request request = requestRepository.findById(id).orElseThrow(() -> new RuntimeException("Request not found"));
         
         request.setType(type);
         request.setAction(action);
+        request.setStatus(status);
 
         return requestRepository.save(request);
     }

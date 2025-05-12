@@ -1,5 +1,7 @@
 package com.replicantt.energyrs.DTO;
 
+import java.time.LocalDateTime;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -14,5 +16,5 @@ public class RequestDTO {
     @NotBlank(message = "Action cannot be blank")
     private String action;
     private String status; // статус может быть null, если не передан, то устанавливаем по умолчанию SUBMITTED
-    private String createdAt; // дата создания запроса, если не передана, то устанавливаем по умолчанию текущую дату и время
+    private LocalDateTime createdAt; // дата создания запроса, если не передана, то устанавливаем по умолчанию текущую дату и время
 }
