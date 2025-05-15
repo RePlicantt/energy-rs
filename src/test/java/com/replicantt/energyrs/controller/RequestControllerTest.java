@@ -47,7 +47,44 @@ class RequestControllerTest {
             .setValidator(new LocalValidatorFactoryBean())
             .build();
     }
-
+    
+    @Test
+    void testGetAllRequests() throws Exception {
+        mockMvc.perform(get("/requests")
+        .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
+    }
+    
+    @Test
+    void testGetRequestById() throws Exception {
+        Request mockRequest = new Request();
+        String requestId = "RQA-000001";
+        Long customerId = (long) 6;
+        String type = "gas";
+        String action = "shutdown";
+        Request.EnumStatus status = Request.EnumStatus.SUBMITTED;
+        LocalDateTime createdAt = LocalDateTime.of(2023, 10, 1, 12, 0, 0);
+        
+        mockRequest.setId(requestId);
+        mockRequest.setCustomerId(customerId);
+        mockRequest.setType(type);
+        mockRequest.setAction(action);
+        mockRequest.setStatus(status);
+        mockRequest.setCreatedAt(createdAt);
+        
+        when(requestService.getRequestById(requestId)).thenReturn(mockRequest);
+        
+        mockMvc.perform(get("/requests/" + requestId)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(requestId))
+            .andExpect(jsonPath("$.customerId").value(customerId))
+            .andExpect(jsonPath("$.type").value(type))
+            .andExpect(jsonPath("$.action").value(action))
+            .andExpect(jsonPath("$.status").value(status.toString()))
+            .andExpect(jsonPath("$.createdAt").value("2023-10-01T12:00"));
+    }
+    
     @Test
     void testAddRequest() throws Exception {
         String jsonBody = "{\"customerId\":6,\"type\":\"gas\",\"action\":\"shutdown\"}";
@@ -66,43 +103,6 @@ class RequestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonBody))
                 .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void testGetAllRequests() throws Exception {
-        mockMvc.perform(get("/requests")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void testGetRequestById() throws Exception {
-        Request mockRequest = new Request();
-        String requestId = "RQA-000001";
-        Long customerId = (long) 6;
-        String type = "gas";
-        String action = "shutdown";
-        Request.EnumStatus status = Request.EnumStatus.SUBMITTED;
-        LocalDateTime createdAt = LocalDateTime.of(2023, 10, 1, 12, 0, 0);
-
-        mockRequest.setId(requestId);
-        mockRequest.setCustomerId(customerId);
-        mockRequest.setType(type);
-        mockRequest.setAction(action);
-        mockRequest.setStatus(status);
-        mockRequest.setCreatedAt(createdAt);
-
-        when(requestService.getRequestById(requestId)).thenReturn(mockRequest);
-
-        mockMvc.perform(get("/requests/" + requestId)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(requestId))
-                .andExpect(jsonPath("$.customerId").value(customerId))
-                .andExpect(jsonPath("$.type").value(type))
-                .andExpect(jsonPath("$.action").value(action))
-                .andExpect(jsonPath("$.status").value(status.toString()))
-                .andExpect(jsonPath("$.createdAt").value("2023-10-01T12:00"));
     }
 
     @Test
@@ -158,6 +158,22 @@ class RequestControllerTest {
                 .andExpect(status().isOk());
 
         verify(requestService).updateRequest(requestId, type, action, EnumStatus.CANCELLED);
+    }
+
+    @Test
+    void testUpdateRequest_withInvalidRequestId() throws Exception {
+
+        String requestId = "INVALID_REQUEST_ID";
+        String type = "electricity";
+        String action = "connection";
+        String status = "CANCELLED";
+
+        mockMvc.perform(put("/requests/" + requestId)
+                .param("type", type)
+                .param("action", action)
+                .param("status", status)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
 }

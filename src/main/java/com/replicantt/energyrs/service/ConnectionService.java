@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.replicantt.energyrs.DTO.ConnectionDTO;
 import com.replicantt.energyrs.repository.Connection;
 import com.replicantt.energyrs.repository.Connection.EnumRequestType;
 import com.replicantt.energyrs.repository.Connection.EnumStatus;
@@ -20,24 +21,39 @@ public class ConnectionService {
     }
 
     public Connection getConnection(String meterId) {
-        return connectionRepository.findByMeterId(meterId);
+        Connection connection = connectionRepository.findByMeterId(meterId);
+        if (connection == null) {
+            throw new RuntimeException("Connection not found");
+        }
+        return connection;
     }
     
     public List<Connection> getAllConnections() {
         return connectionRepository.findAll();
     }
     @Transactional
-    public Connection addConnection(Connection connection) {
-        if (connectionRepository.existsByMeterId(connection.getMeterId())) {
+    public Connection addConnection(ConnectionDTO connectionDTO) {
+        if (connectionRepository.existsByMeterId(connectionDTO.getMeterId())) {
             throw new RuntimeException("Connection with this meterId already exists");
         }
-        System.out.println("Saving connection: " + connection);
-        return connectionRepository.save(connection);
+        
+        System.out.println("Saving connection: " + connectionDTO);
+        Connection connectionToSave = Connection.builder()
+            .meterId(connectionDTO.getMeterId())
+            .type(EnumRequestType.valueOf(connectionDTO.getType()))
+            .status(EnumStatus.valueOf(connectionDTO.getStatus()))
+            .dependedRequestId(connectionDTO.getDependedRequestId())
+            .build();
+
+        return connectionRepository.save(connectionToSave);
     }
 
-    @Transactional
     public void deleteConnection(String meterId) {
-        connectionRepository.deleteByMeterId(meterId);
+        if (connectionRepository.existsByMeterId(meterId)) {
+            connectionRepository.deleteByMeterId(meterId);
+        } else {
+            throw new RuntimeException("Connection not found with meter: " + meterId);
+        }
     }
 
     @Transactional

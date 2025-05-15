@@ -74,7 +74,6 @@ public class RequestService {
     }
 
     public void deleteRequest(String id) {
-
         if (!requestRepository.existsById(id)) {
             throw new RuntimeException("Request not found with ID: " + id);
         }
@@ -119,6 +118,7 @@ public class RequestService {
         return requestId;
     }
 
+    @Transactional
     public Request updateRequest(String id, String type, String action, Request.EnumStatus status) {
         Request request = requestRepository.findById(id).orElseThrow(() -> new RuntimeException("Request not found"));
         

@@ -176,5 +176,4 @@ public class RequestServiceTest {
         assertEquals(testCreatedAt, result.getCreatedAt());
     }
 
-
 }

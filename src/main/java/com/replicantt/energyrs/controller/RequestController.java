@@ -53,7 +53,7 @@ public class RequestController {
         try {
             requestService.deleteRequest(id);
             return ResponseEntity.noContent().build(); // Возвращаем 204 No Content, если запрос успешно удален
-        } catch (RuntimeException  e) {
+        } catch (RuntimeException e) {
             return ResponseEntity.notFound().build(); // Возвращаем 404 Not Found, если запрос не найден
         }
     }

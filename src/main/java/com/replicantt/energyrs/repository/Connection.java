@@ -7,11 +7,13 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Table(name = "connections")
+@Builder
 @Getter
 @Setter
 public class Connection {
@@ -24,11 +26,12 @@ public class Connection {
     private EnumStatus status;
     private LocalDate connectionDate;
 
-    public Connection(String dependedRequestId, String meterId, EnumRequestType type, EnumStatus status) {
+    public Connection(String dependedRequestId, String meterId, EnumRequestType type, EnumStatus status, LocalDate connectionDate) {
         this.dependedRequestId = dependedRequestId;
         this.meterId = meterId;
         this.type = type;
         this.status = status;
+        this.connectionDate = connectionDate;
     }
 
     
