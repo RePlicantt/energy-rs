@@ -40,7 +40,7 @@ public class ConnectionControllerTest {
 
     @BeforeEach
     void setUp() {
-        // Инициализация MockMvc с контроллером и валидатором
+        
         mockMvc = MockMvcBuilders
             .standaloneSetup(connectionController)
             .setValidator(new LocalValidatorFactoryBean())

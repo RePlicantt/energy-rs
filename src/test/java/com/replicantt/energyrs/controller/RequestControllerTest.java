@@ -96,7 +96,7 @@ class RequestControllerTest {
     }
 
     @Test
-    void testAddInvalidRequest() throws Exception {
+    void testAddRequest_withInvalidJson() throws Exception {
         String jsonBody = "{\"customerId\":6,\"type\":null,\"action\":\"shu42tdown\"}";
 
         mockMvc.perform(post("/requests")
@@ -106,7 +106,7 @@ class RequestControllerTest {
     }
 
     @Test
-    void testGetInvalidRequestById() throws Exception {
+    void testGetRequest_withInvalidId() throws Exception {
         String invalidRequestId = "INVALID_ID";
 
         when(requestService.getRequestById(invalidRequestId)).thenReturn(null);
@@ -128,7 +128,7 @@ class RequestControllerTest {
     }
 
     @Test
-    void testDeleteRequestByInvalidId() throws Exception {
+    void testDeleteRequest_withInvalidId() throws Exception {
         String invalidRequestId = "INVALID_ID";
 
         doThrow(new RuntimeException("Request not found")).when(requestService).deleteRequest(invalidRequestId);

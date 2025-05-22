@@ -26,9 +26,9 @@ public class Connection {
     private EnumStatus status;
     private LocalDate connectionDate;
 
-    public Connection(String dependedRequestId, String meterId, EnumRequestType type, EnumStatus status, LocalDate connectionDate) {
-        this.dependedRequestId = dependedRequestId;
+    public Connection(String meterId, String dependedRequestId, EnumRequestType type, EnumStatus status, LocalDate connectionDate) {
         this.meterId = meterId;
+        this.dependedRequestId = dependedRequestId;
         this.type = type;
         this.status = status;
         this.connectionDate = connectionDate;

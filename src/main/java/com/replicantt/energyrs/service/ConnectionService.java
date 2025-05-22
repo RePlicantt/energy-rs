@@ -10,9 +10,11 @@ import com.replicantt.energyrs.repository.Connection.EnumRequestType;
 import com.replicantt.energyrs.repository.Connection.EnumStatus;
 
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
 import com.replicantt.energyrs.repository.ConnectionRepository;
 
+@Slf4j
 @Service
 public class ConnectionService {
     private final ConnectionRepository connectionRepository;
@@ -37,28 +39,31 @@ public class ConnectionService {
             throw new RuntimeException("Connection with this meterId already exists");
         }
         
-        System.out.println("Saving connection: " + connectionDTO);
         Connection connectionToSave = Connection.builder()
-            .meterId(connectionDTO.getMeterId())
-            .type(EnumRequestType.valueOf(connectionDTO.getType()))
-            .status(EnumStatus.valueOf(connectionDTO.getStatus()))
-            .dependedRequestId(connectionDTO.getDependedRequestId())
-            .build();
-
+                .meterId(connectionDTO.getMeterId())
+                .dependedRequestId(connectionDTO.getDependedRequestId())
+                .type(EnumRequestType.valueOf(connectionDTO.getType()))
+                .status(EnumStatus.valueOf(connectionDTO.getStatus()))
+                .connectionDate(connectionDTO.getConnectionDate())
+                .build();
+        
+        log.debug("Connection saved: {}", connectionToSave);
         return connectionRepository.save(connectionToSave);
     }
 
     public void deleteConnection(String meterId) {
         if (connectionRepository.existsByMeterId(meterId)) {
             connectionRepository.deleteByMeterId(meterId);
+            log.debug("Connection with ID {} has been deleted", meterId);
         } else {
             throw new RuntimeException("Connection not found with meter: " + meterId);
         }
     }
 
     @Transactional
-    public void updateConnection(String meterId, String dependedRequestId, EnumRequestType type, EnumStatus status) {
+    public Connection updateConnection(String meterId, String dependedRequestId, EnumRequestType type, EnumStatus status) {
         Connection connection = connectionRepository.findByMeterId(meterId);
+        
         if (connection == null) {
             throw new RuntimeException("Connection not found");
         }
@@ -73,6 +78,7 @@ public class ConnectionService {
             connection.setType(type);
         }
 
-        connectionRepository.save(connection);
+        log.debug("Connection updated: {}", connection);
+        return connectionRepository.save(connection);
     }
 }

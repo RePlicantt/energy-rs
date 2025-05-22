@@ -20,6 +20,7 @@ public class ConnectionDTO {
     @NotNull(message = "Meter ID cannot be blank")
     @Pattern(regexp = "ACTIVE|INACTIVE", message = "Status must be either ACTIVE or INACTIVE")
     private String status;
+    @NotNull(message = "Connection date cannot be blank")
     private LocalDate connectionDate;
 
 }

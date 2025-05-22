@@ -2,6 +2,7 @@ package com.replicantt.energyrs.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -51,7 +52,7 @@ public class RequestServiceTest {
     }
 
     @Test
-    void testGetRequestByIdTest() {
+    void testGetRequestById() {
         Request mockRequest = new Request();
         mockRequest.setId("RQA-000001");
         mockRequest.setCustomerId((long) 6);
@@ -74,6 +75,17 @@ public class RequestServiceTest {
         assertEquals("shutdown", result.getAction());
         assertEquals(Request.EnumStatus.SUBMITTED, result.getStatus());
         assertEquals(createdAt, result.getCreatedAt());
+    }
+
+    @Test 
+    void testGetRequestById_withInvalidID () {
+        String invalidId = "INVALID_ID";
+
+        when(requestRepository.findById(invalidId)).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class, () -> {
+            requestService.getRequestById(invalidId);
+        });
     }
 
     @Test
@@ -150,6 +162,8 @@ public class RequestServiceTest {
 
     }
 
+    //TODO забыл сделать тест для delete метода RequsetService
+
     @Test
     void testUpdateRequest() {
         Request mockRequest = new Request();
@@ -174,6 +188,17 @@ public class RequestServiceTest {
         assertEquals("connection", result.getAction());
         assertEquals(Request.EnumStatus.CANCELLED, result.getStatus());
         assertEquals(testCreatedAt, result.getCreatedAt());
+    }
+
+    @Test
+    void testUpdateRequest_withInvalidId() {
+        String invalidId = "INVALID_ID";
+
+        when(requestRepository.findById(invalidId)).thenReturn(null);
+
+        assertThrows(RuntimeException.class, () -> {
+            requestService.updateRequest("RQA-000001", "electricity", "connection", EnumStatus.CANCELLED);
+        });
     }
 
 }
