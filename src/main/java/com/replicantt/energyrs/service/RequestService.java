@@ -45,6 +45,11 @@ public class RequestService {
         String generatedId = generateRequestId();
         requestDTO.setId(generatedId); // Устанавливаем сгенерированный ID в запрос
 
+        // На всякий случай, если вдруг что-то поламается и будет генерировать дубликаты
+        if (requestRepository.existsById(generatedId)) {
+            throw new RuntimeException("Request already exists with ID: " + generatedId);
+        }
+
         if (!requestDTO.getType().equals("electricity") && !requestDTO.getType().equals("gas")) {
             throw new RuntimeException("Invalid type. Must be 'electricity' or 'gas'.");
         }
@@ -76,8 +81,9 @@ public class RequestService {
     public void deleteRequest(String id) {
         if (!requestRepository.existsById(id)) {
             throw new RuntimeException("Request not found with ID: " + id);
+        } else {
+            requestRepository.deleteById(id);
         }
-        requestRepository.deleteById(id);
     }
 
     @Transactional

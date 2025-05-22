@@ -37,16 +37,15 @@ public class RequestServiceTest {
 
     @Test
     void testGetAllRequests() {
-        // Mock the behavior of requestRepository.findAll() to return a list of requests
-        when(requestRepository.findAll()).thenReturn(List.of(new Request(), new Request()));
+        Request request = new Request();
+        Request request1 = new Request();
+
+        when(requestRepository.findAll()).thenReturn(List.of(request, request1));
         
-        // Call the method under test
         List<Request> requests = requestService.getAllRequests();
         
-        // Verify that the repository method was called
         verify(requestRepository).findAll();
         
-        // Assert that the returned list is not null and has the expected size
         assertNotNull(requests);
         assertEquals(2, requests.size());
     }
