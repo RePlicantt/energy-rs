@@ -120,6 +120,7 @@ public class ConnectionServiceTest {
         String invalidMeterId = "INVALID_METER_ID";
 
         when(connectionRepository.existsByMeterId(invalidMeterId)).thenReturn(false);
+        
         assertThrows(RuntimeException.class, () -> {
             connectionService.deleteConnection(invalidMeterId);
         });

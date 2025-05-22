@@ -162,7 +162,26 @@ public class RequestServiceTest {
 
     }
 
-    //TODO забыл сделать тест для delete метода RequsetService
+    @Test
+    void testDeleteRequest() {
+        String id = "RQA-000001";
+
+        when(requestRepository.existsById(id)).thenReturn(true);
+        requestService.deleteRequest(id);
+
+        verify(requestRepository).deleteById(id);
+    }
+
+    @Test
+    void testDeleteRequest_withId() {
+        String InvalidId = "INVALID_ID";
+
+        when(requestRepository.existsById(InvalidId)).thenReturn(false);
+
+        assertThrows(RuntimeException.class, () -> {
+            requestService.deleteRequest(InvalidId);
+        });
+    }
 
     @Test
     void testUpdateRequest() {
