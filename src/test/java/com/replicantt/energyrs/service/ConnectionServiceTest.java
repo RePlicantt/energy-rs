@@ -87,8 +87,8 @@ public class ConnectionServiceTest {
     }
 
     @Test
-    void testAddConnection_withExistingId() {
-        String existingMeterId = "EXISTING_METER_ID";
+    void testAddConnection_withNonExistingId() {
+        String existingMeterId = "NON_EXISTING_METER_ID";
 
         ConnectionDTO mockConnectionDTO = new ConnectionDTO();
         mockConnectionDTO.setMeterId(existingMeterId);

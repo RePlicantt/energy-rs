@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.any;
+import static org.mockito.ArgumentMatchers.any;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.replicantt.energyrs.DTO.CustomerDTO;
 import com.replicantt.energyrs.repository.Customer;
 import com.replicantt.energyrs.repository.CustomerRepository;
 
@@ -47,7 +48,7 @@ public class CustomerServiceTest {
     void testGetCustomer() {
         Customer mockCustomer = new Customer();
 
-        mockCustomer.setId((long)1);
+        mockCustomer.setId(1L);
         mockCustomer.setName("Alex");
         mockCustomer.setEmail("alex@example.com");
         mockCustomer.setBirth(LocalDate.of(2001, 05, 12));
@@ -60,7 +61,7 @@ public class CustomerServiceTest {
 
         verify(customerRepository).findById(mockCustomer.getId());
 
-        assertEquals((long) 1, result.getId());
+        assertEquals(1L, result.getId());
         assertEquals("Alex", result.getName());
         assertEquals("alex@example.com", result.getEmail());
         assertEquals(LocalDate.of(2001, 05, 12), result.getBirth());
@@ -70,7 +71,7 @@ public class CustomerServiceTest {
 
     @Test
     void testGetCustomer_withInvalidID () {
-        Long invalidId = (long) 0;
+        Long invalidId = 0L;
 
         when(customerRepository.findById(invalidId)).thenReturn(Optional.empty());
 
@@ -79,9 +80,31 @@ public class CustomerServiceTest {
         });
     }
 
+    @Test
+    void testAddCustomer() {
+        CustomerDTO mockCustomerDTO = new CustomerDTO();
+
+        mockCustomerDTO.setName("Alex");
+        mockCustomerDTO.setEmail("alex@example.com");
+        mockCustomerDTO.setBirth(LocalDate.of(2001, 05, 12));
+        mockCustomerDTO.setPhoneNumber("+37199999999");
+        mockCustomerDTO.setAddress("Country, City, Street st. 99-99");
+
+        when(customerRepository.save(any(Customer.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Customer result = customerService.addCustomer(mockCustomerDTO);
+
+        assertEquals("Alex", result.getName());
+        assertEquals("alex@example.com", result.getEmail());
+        assertEquals(LocalDate.of(2001, 05, 12), result.getBirth());
+        assertEquals("+37199999999", result.getPhoneNumber());
+        assertEquals("Country, City, Street st. 99-99", result.getAddress());
+
+    }
+
     @Test 
     void testDeleteCustomer() {
-        Long id = (long) 1;
+        Long id = 1L;
 
         when(customerRepository.existsById(id)).thenReturn(true);
         customerService.deleteCustomer(id);
@@ -91,7 +114,7 @@ public class CustomerServiceTest {
 
     @Test
     void testDeleteCustomer_withInvalidId() {
-        Long invalidId = (long) 0;
+        Long invalidId = 0L;
 
         when(customerRepository.existsById(invalidId)).thenReturn(false);
 
@@ -104,7 +127,7 @@ public class CustomerServiceTest {
     void testUpdateCustomer() {
         Customer mockCustomer = new Customer();
         
-        Long id = (long)1;
+        Long id = 1L;
 
         mockCustomer.setId(id);
         mockCustomer.setName("Alex");
@@ -124,7 +147,7 @@ public class CustomerServiceTest {
 
         Customer result = customerService.updateCustomer(id, nameToUpdate, emailToUpdate, birthDateToUpdate, phoneNumberToUpdate, adressToUpdate);
 
-        assertEquals((long) 1, result.getId());
+        assertEquals(1L, result.getId());
         assertEquals(nameToUpdate, result.getName());
         assertEquals(emailToUpdate, result.getEmail());
         assertEquals(birthDateToUpdate, result.getBirth());
@@ -134,7 +157,7 @@ public class CustomerServiceTest {
 
     @Test
     void testUpdateCustomer_withInvalidId() {
-        Long invalidId = (long) 0;
+        Long invalidId = 0L;
 
         String nameToUpdate = "Gordon";
         String emailToUpdate = "gordon@example.com";

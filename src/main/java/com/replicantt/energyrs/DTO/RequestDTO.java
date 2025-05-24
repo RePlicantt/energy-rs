@@ -2,11 +2,14 @@ package com.replicantt.energyrs.DTO;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RequestDTO {
     private String id; // ID запроса, генерируется автоматически
     @NotNull(message = "Customer ID cannot be blank")

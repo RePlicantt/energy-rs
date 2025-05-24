@@ -5,9 +5,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.replicantt.energyrs.DTO.CustomerDTO;
 import com.replicantt.energyrs.repository.Customer;
 import com.replicantt.energyrs.repository.CustomerRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -25,9 +27,18 @@ public class CustomerService {
         return customerRepository.findById(id).orElseThrow(() -> new RuntimeException("Customer not found"));
     }
 
-    public Customer addCustomer(Customer customer) {
-        log.debug("Customer saved: {}", customer);
-        return customerRepository.save(customer);
+    @Transactional
+    public Customer addCustomer(CustomerDTO customerDTO) {
+        Customer customerToSave = Customer.builder()
+                .name(customerDTO.getName())
+                .email(customerDTO.getEmail())
+                .birth(customerDTO.getBirth())
+                .phoneNumber(customerDTO.getPhoneNumber())
+                .address(customerDTO.getAddress())
+                .build();
+
+        log.debug("Customer saved: {}", customerToSave);
+        return customerRepository.save(customerToSave);
     }
 
     public void deleteCustomer(Long id) {

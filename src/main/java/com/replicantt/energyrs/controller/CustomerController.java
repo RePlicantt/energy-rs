@@ -3,6 +3,7 @@ package com.replicantt.energyrs.controller;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,8 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.replicantt.energyrs.DTO.CustomerDTO;
 import com.replicantt.energyrs.repository.Customer;
 import com.replicantt.energyrs.service.CustomerService;
+
+import jakarta.validation.Valid;
 
 @RestController
 public class CustomerController {
@@ -26,15 +30,26 @@ public class CustomerController {
     public List<Customer> findAll() {
         return customerService.getAllCustomers();
     }
+
+    @GetMapping("/customers/{id}")
+    public Customer getCustomer(@PathVariable Long id) {
+        return customerService.getCustomer(id);
+    }
  
     @PostMapping("/customers")
-    public Customer addCustomer(@RequestBody Customer customer) {
-        return customerService.addCustomer(customer);
+    public ResponseEntity<Object> addCustomer(@Valid @RequestBody CustomerDTO customerDTO) {
+        customerService.addCustomer(customerDTO);
+        return ResponseEntity.status(201).build();
     }
 
     @DeleteMapping("/customers/{id}")
-    public void deleteCustomer(@PathVariable Long id) {
-        customerService.deleteCustomer(id);
+    public ResponseEntity<Object> deleteCustomer(@PathVariable Long id) {
+        try {
+            customerService.deleteCustomer(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/customers/{id}")

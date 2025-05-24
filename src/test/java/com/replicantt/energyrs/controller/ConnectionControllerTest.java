@@ -50,8 +50,8 @@ public class ConnectionControllerTest {
     @Test
     void testGetAllConnections() throws Exception {
         mockMvc.perform(get("/connections")
-        .contentType(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk());
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -75,11 +75,11 @@ public class ConnectionControllerTest {
             .andExpect(jsonPath("$.type").value(type.toString()))
             .andExpect(jsonPath("$.status").value(status.toString()));
     }
-
+    
     @Test
     void testAddConnection() throws Exception {
         String jsonBody = "{\"meterId\":\"000000001\",\"dependedRequestId\":\"RQA-000006\","
-                + "\"type\":\"GAS\",\"status\":\"ACTIVE\"}";
+                + "\"type\":\"GAS\",\"status\":\"ACTIVE\",\"connectionDate\":\"1995-03-02\"}";
 
         mockMvc.perform(post("/connections")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -89,7 +89,7 @@ public class ConnectionControllerTest {
 
     @Test
     void testInvalidAddConnection() throws Exception {
-        String jsonBody = "{\"meterId\":\"000000001\",\"INVALID_TYPE\":\"RQA-000006\","
+        String jsonBody = "{\"meterId\":\"000000001\",\"dependedRequestId\":\"INVALID_RQA\","
                 + "\"type\":\"GAS\",\"status\":\"ACTIVE\"}";
 
         mockMvc.perform(post("/connections")
