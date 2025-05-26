@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,6 +18,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "customers")
 @Builder
+@AllArgsConstructor
 @Getter
 @Setter
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -24,23 +26,73 @@ public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+
+    private String firstName;
+    private String middleName;
+    private String lastName;
+
     private String email;
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birth;
+
     private String phoneNumber;
-    private String address;
+
+    private String country;
+    private String state;
+    private String city;
+    private String street;
+    private String houseNumber;
+    private String apartment;
+    private String postalCode;
+    private String fullAddress;
 
     // TODO разбить адрес на отдельные поля Country, State (если есть), City, Street, House Number, Apartment (если есть), Postal Code
     // и сделать миграцию БД.
     // Также разбить имя на First Name, Middle Name (если есть), Last Name и сделать миграцию БД.
-    public Customer(Long id, String name, String email, LocalDate birth, String phoneNumber, String address) {
+    public Customer(
+            Long id, 
+            String firstName, 
+            String middleName, 
+            String lastName, 
+            String email, 
+            LocalDate birth, 
+            String phoneNumber, 
+            String country,
+            String state,
+            String city,
+            String street,
+            String houseNumber,
+            String apartment,
+            String postalCode
+        ) {
+
         this.id = id;
-        this.name = name;
+
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+
         this.email = email;
+
         this.birth = birth;
+
         this.phoneNumber = phoneNumber;
-        this.address = address;
+
+        this.country = country;
+        this.state = state;
+        this.city = city;
+        this.street = street;
+        this.houseNumber = houseNumber;
+        this.apartment = apartment;
+        this.postalCode = postalCode;
+        this.fullAddress = country + ", " + 
+                            state + ", " + 
+                            city + ", " + 
+                            street + " " + 
+                            houseNumber + ", " + 
+                            apartment + ", " + 
+                            postalCode;
     }
 
     public Customer() {
@@ -50,11 +102,19 @@ public class Customer {
     public String toString() {
         return "Customer{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", middleName='" + middleName + '\'' +
+                ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", birth=" + birth +
                 ", phoneNumber='" + phoneNumber + '\'' +
-                ", address='" + address + '\'' +
+                ", country='" + country + '\'' +
+                ", state='" + state + '\'' +
+                ", city='" + city + '\'' +
+                ", street='" + street + '\'' +
+                ", houseNumber='" + houseNumber + '\'' +
+                ", apartment='" + apartment + '\'' +
+                ", postalCode='" + postalCode + '\'' +
                 '}';
     }
 }

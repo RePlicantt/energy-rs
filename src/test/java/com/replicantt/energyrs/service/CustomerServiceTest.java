@@ -49,11 +49,19 @@ public class CustomerServiceTest {
         Customer mockCustomer = new Customer();
 
         mockCustomer.setId(1L);
-        mockCustomer.setName("Alex");
-        mockCustomer.setEmail("alex@example.com");
+        mockCustomer.setFirstName("Robert");
+        mockCustomer.setMiddleName("James");
+        mockCustomer.setLastName("Clinton");
+        mockCustomer.setEmail("robert@example.com");
         mockCustomer.setBirth(LocalDate.of(2001, 05, 12));
         mockCustomer.setPhoneNumber("+37199999999");
-        mockCustomer.setAddress("Country, City, Street st. 99-99");
+        mockCustomer.setCountry("USA");
+        mockCustomer.setState("California");
+        mockCustomer.setCity("Los Angeles");
+        mockCustomer.setStreet("Sunset Blvd");
+        mockCustomer.setHouseNumber("100");
+        mockCustomer.setApartment("10A");
+        mockCustomer.setPostalCode("90001");
 
         when(customerRepository.findById(mockCustomer.getId())).thenReturn(Optional.of(mockCustomer));
 
@@ -62,11 +70,19 @@ public class CustomerServiceTest {
         verify(customerRepository).findById(mockCustomer.getId());
 
         assertEquals(1L, result.getId());
-        assertEquals("Alex", result.getName());
-        assertEquals("alex@example.com", result.getEmail());
+        assertEquals("Robert", result.getFirstName());
+        assertEquals("James", result.getMiddleName());
+        assertEquals("Clinton", result.getLastName());
+        assertEquals("robert@example.com", result.getEmail());
         assertEquals(LocalDate.of(2001, 05, 12), result.getBirth());
         assertEquals("+37199999999", result.getPhoneNumber());
-        assertEquals("Country, City, Street st. 99-99", result.getAddress());
+        assertEquals("USA", result.getCountry());
+        assertEquals("California", result.getState());
+        assertEquals("Los Angeles", result.getCity());
+        assertEquals("Sunset Blvd", result.getStreet());
+        assertEquals("100", result.getHouseNumber());
+        assertEquals("10A", result.getApartment());
+        assertEquals("90001", result.getPostalCode());
     }
 
     @Test
@@ -84,21 +100,37 @@ public class CustomerServiceTest {
     void testAddCustomer() {
         CustomerDTO mockCustomerDTO = new CustomerDTO();
 
-        mockCustomerDTO.setName("Alex");
-        mockCustomerDTO.setEmail("alex@example.com");
+        mockCustomerDTO.setFirstName("Robert");
+        mockCustomerDTO.setMiddleName("James");
+        mockCustomerDTO.setLastName("Clinton");
+        mockCustomerDTO.setEmail("robert@example.com");
         mockCustomerDTO.setBirth(LocalDate.of(2001, 05, 12));
         mockCustomerDTO.setPhoneNumber("+37199999999");
-        mockCustomerDTO.setAddress("Country, City, Street st. 99-99");
+        mockCustomerDTO.setCountry("USA");
+        mockCustomerDTO.setState("California");
+        mockCustomerDTO.setCity("Los Angeles");
+        mockCustomerDTO.setStreet("Sunset Blvd");
+        mockCustomerDTO.setHouseNumber("100");
+        mockCustomerDTO.setApartment("10A");
+        mockCustomerDTO.setPostalCode("90001");
 
         when(customerRepository.save(any(Customer.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         Customer result = customerService.addCustomer(mockCustomerDTO);
 
-        assertEquals("Alex", result.getName());
-        assertEquals("alex@example.com", result.getEmail());
+        assertEquals("Robert", result.getFirstName());
+        assertEquals("James", result.getMiddleName());
+        assertEquals("Clinton", result.getLastName());
+        assertEquals("robert@example.com", result.getEmail());
         assertEquals(LocalDate.of(2001, 05, 12), result.getBirth());
         assertEquals("+37199999999", result.getPhoneNumber());
-        assertEquals("Country, City, Street st. 99-99", result.getAddress());
+        assertEquals("USA", result.getCountry());
+        assertEquals("California", result.getState());
+        assertEquals("Los Angeles", result.getCity());
+        assertEquals("Sunset Blvd", result.getStreet());
+        assertEquals("100", result.getHouseNumber());
+        assertEquals("10A", result.getApartment());
+        assertEquals("90001", result.getPostalCode());
 
     }
 
@@ -130,45 +162,110 @@ public class CustomerServiceTest {
         Long id = 1L;
 
         mockCustomer.setId(id);
-        mockCustomer.setName("Alex");
-        mockCustomer.setEmail("alex@example.com");
+        mockCustomer.setFirstName("Robert");
+        mockCustomer.setMiddleName("James");
+        mockCustomer.setLastName("Clinton");
+        mockCustomer.setEmail("robert@example.com");
         mockCustomer.setBirth(LocalDate.of(2001, 05, 12));
         mockCustomer.setPhoneNumber("+37199999999");
-        mockCustomer.setAddress("Country, City, Street st. 99-99");
+        mockCustomer.setCountry("USA");
+        mockCustomer.setState("California");
+        mockCustomer.setCity("Los Angeles");
+        mockCustomer.setStreet("Sunset Blvd");
+        mockCustomer.setHouseNumber("100");
+        mockCustomer.setApartment("10A");
+        mockCustomer.setPostalCode("90001");
 
-        String nameToUpdate = "Gordon";
+        String firstNameToUpdate = "Gordon";
+        String middleNameToUpdate = "Alex";
+        String lastNameToUpdate = "Smith";
         String emailToUpdate = "gordon@example.com";
         LocalDate birthDateToUpdate = LocalDate.of(2003, 01, 20);
         String phoneNumberToUpdate = "37100000000";
-        String adressToUpdate = "Country, City, Different Street st. 01-10";
+        String countryToUpdate = "Country";
+        String stateToUpdate = "State";
+        String cityToUpdate = "City";
+        String streetToUpdate = "Different Street";
+        String houseNumberToUpdate = "01-10";
+        String apartmentToUpdate = "Apartment 1";
+        String postalCodeToUpdate = "12345";
 
         when(customerRepository.findById(id)).thenReturn(Optional.of(mockCustomer));
         when(customerRepository.save(any(Customer.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Customer result = customerService.updateCustomer(id, nameToUpdate, emailToUpdate, birthDateToUpdate, phoneNumberToUpdate, adressToUpdate);
+        Customer result = customerService.updateCustomer(
+                id, 
+                firstNameToUpdate,
+                middleNameToUpdate,
+                lastNameToUpdate,
+                emailToUpdate,
+                birthDateToUpdate, 
+                phoneNumberToUpdate, 
+                countryToUpdate,
+                stateToUpdate,
+                cityToUpdate,
+                streetToUpdate,
+                houseNumberToUpdate,
+                apartmentToUpdate,
+                postalCodeToUpdate
+                );
 
         assertEquals(1L, result.getId());
-        assertEquals(nameToUpdate, result.getName());
+        assertEquals(firstNameToUpdate, result.getFirstName());
+        assertEquals(middleNameToUpdate, result.getMiddleName());
+        assertEquals(lastNameToUpdate, result.getLastName());
         assertEquals(emailToUpdate, result.getEmail());
         assertEquals(birthDateToUpdate, result.getBirth());
         assertEquals(phoneNumberToUpdate, result.getPhoneNumber());
-        assertEquals(adressToUpdate, result.getAddress());
+        assertEquals(countryToUpdate, result.getCountry());
+        assertEquals(stateToUpdate, result.getState());
+        assertEquals(cityToUpdate, result.getCity());
+        assertEquals(streetToUpdate, result.getStreet());
+        assertEquals(houseNumberToUpdate, result.getHouseNumber());
+        assertEquals(apartmentToUpdate, result.getApartment());
+        assertEquals(postalCodeToUpdate, result.getPostalCode());
+
+        verify(customerRepository).findById(id);
+        verify(customerRepository).save(result);
     }
 
     @Test
     void testUpdateCustomer_withInvalidId() {
         Long invalidId = 0L;
 
-        String nameToUpdate = "Gordon";
+        String firstNameToUpdate = "Gordon";
+        String middleNameToUpdate = "Alex";
+        String lastNameToUpdate = "Smith";
         String emailToUpdate = "gordon@example.com";
         LocalDate birthDateToUpdate = LocalDate.of(2003, 01, 20);
         String phoneNumberToUpdate = "37100000000";
-        String adressToUpdate = "Country, City, Different Street st. 01-10";
+        String countryToUpdate = "Country";
+        String stateToUpdate = "State";
+        String cityToUpdate = "City";
+        String streetToUpdate = "Different Street";
+        String houseNumberToUpdate = "01-10";
+        String apartmentToUpdate = "Apartment 1";
+        String postalCodeToUpdate = "12345";
 
         when(customerRepository.findById(invalidId)).thenReturn(null);
 
         assertThrows(RuntimeException.class, () -> {
-            customerService.updateCustomer(invalidId, nameToUpdate, emailToUpdate, birthDateToUpdate, phoneNumberToUpdate, adressToUpdate);
+            customerService.updateCustomer(
+                invalidId, 
+                firstNameToUpdate,
+                middleNameToUpdate,
+                lastNameToUpdate,
+                emailToUpdate,
+                birthDateToUpdate, 
+                phoneNumberToUpdate, 
+                countryToUpdate,
+                stateToUpdate,
+                cityToUpdate,
+                streetToUpdate,
+                houseNumberToUpdate,
+                apartmentToUpdate,
+                postalCodeToUpdate
+                );
         });
     }
 }

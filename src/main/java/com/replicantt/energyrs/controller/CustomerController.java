@@ -55,12 +55,34 @@ public class CustomerController {
     @PutMapping("/customers/{id}")
     public void updateCustomer(
         @PathVariable Long id,
-        @RequestParam(required = true) String name,
+        @RequestParam(required = true) String firstName,
+        @RequestParam(required = true) String middleName,
+        @RequestParam(required = true) String lastName,
         @RequestParam(required = false) String email,
         @RequestParam(required = true) LocalDate birth,
         @RequestParam(required = true) String phoneNumber,
-        @RequestParam(required = true) String address
+        @RequestParam(required = true) String country,
+        @RequestParam(required = false) String state,
+        @RequestParam(required = true) String city,
+        @RequestParam(required = true) String street,
+        @RequestParam(required = true) String houseNumber,
+        @RequestParam(required = false) String apartment,
+        @RequestParam(required = true) String postalCode
     ) {
-        customerService.updateCustomer(id, name, email, birth, phoneNumber, address);
+        customerService.updateCustomer(
+                id, 
+                firstName, 
+                middleName, 
+                lastName, 
+                email, 
+                birth, 
+                phoneNumber, 
+                country, 
+                state, 
+                city, 
+                street, 
+                houseNumber, 
+                apartment, 
+                postalCode);
     }
 }

@@ -58,35 +58,59 @@ public class CustomerControllerTest {
         Customer mockCustomer = new Customer();
 
         Long id = 1L;
-        String name = "Gordon";
-        String email = "gordon@example.com";
+        String firstName = "Robert";
+        String middleName = "James";
+        String lastName = "Clinton";
+        String email = "robert@example.com";
         LocalDate birthDate = LocalDate.of(2003, 01, 20);
-        String phoneNumber = "+37100000000";
-        String address = "Country, City, Different Street st. 01-10";
+        String phoneNumber = "+37199999999";
+        String country = "USA";
+        String state = "NY";
+        String city = "New York";
+        String street = "Broadway";
+        String houseNumber = "123";
+        String apartment = "";
+        String postalCode = "10001";
 
-        mockCustomer.setId(id);
-        mockCustomer.setName(name);
+        mockCustomer.setFirstName(firstName);
+        mockCustomer.setMiddleName(middleName);
+        mockCustomer.setLastName(lastName);
         mockCustomer.setEmail(email);
         mockCustomer.setBirth(birthDate);
         mockCustomer.setPhoneNumber(phoneNumber);
-        mockCustomer.setAddress(address);
+        mockCustomer.setCountry(country);
+        mockCustomer.setState(state);
+        mockCustomer.setCity(city);
+        mockCustomer.setStreet(street);
+        mockCustomer.setHouseNumber(houseNumber);
+        mockCustomer.setApartment(apartment);
+        mockCustomer.setPostalCode(postalCode);
 
         when(customerService.getCustomer(id)).thenReturn(mockCustomer);
 
         mockMvc.perform(get("/customers/" + id)
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name").value(name))
+            .andExpect(jsonPath("$.firstName").value(firstName))
+            .andExpect(jsonPath("$.middleName").value(middleName))
+            .andExpect(jsonPath("$.lastName").value(lastName))
             .andExpect(jsonPath("$.email").value(email))
             .andExpect(jsonPath("$.birth").value(birthDate.toString()))
             .andExpect(jsonPath("$.phoneNumber").value(phoneNumber))
-            .andExpect(jsonPath("$.address").value(address));
+            .andExpect(jsonPath("$.country").value(country))
+            .andExpect(jsonPath("$.state").value(state))
+            .andExpect(jsonPath("$.city").value(city))
+            .andExpect(jsonPath("$.street").value(street))
+            .andExpect(jsonPath("$.houseNumber").value(houseNumber))
+            .andExpect(jsonPath("$.apartment").value(apartment))
+            .andExpect(jsonPath("$.postalCode").value(postalCode));
     }
 
     @Test
     void testAddCustomer() throws Exception {
-        String jsonBody = "{\"name\":\"Gordon\",\"email\":\"gordon@example.com\","
-                + "\"birth\":\"2003-01-20\",\"phoneNumber\":\"+37100000000\",\"address\":\"Country, City, Different Street st. 01-10\"}";
+        String jsonBody = "{\"firstName\":\"Robert\", \"middleName\":\"James\", \"lastName\":\"Clinton\",\"email\":\"robert@example.com\","
+                + "\"birth\":\"2003-01-20\",\"phoneNumber\":\"+37199999999\",\"country\":\"USA\",\"state\":\"NY\",\"city\":\"New York\","
+                + "\"street\":\"Broadway\",\"houseNumber\":\"123\",\"apartment\":\"\",\"postalCode\":\"10001\"}";
 
         mockMvc.perform(post("/customers")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -96,8 +120,9 @@ public class CustomerControllerTest {
 
     @Test
     void testAddCustomer_withInvalidEmail() throws Exception {
-        String jsonBody = "{\"name\":\"Gordon\",\"email\":\"INVALID_EMAIL\","
-                + "\"birth\":\"2003-01-20\",\"phoneNumber\":\"+37100000000\",\"address\":\"Country, City, Different Street st. 01-10\"}";
+        String jsonBody = "{\"firstName\":\"Robert\", \"middleName\":\"James\", \"lastName\":\"Clinton\",\"email\":\"INVALID_EMAIL\","
+                + "\"birth\":\"2003-01-20\",\"phoneNumber\":\"+37199999999\",\"country\":\"USA\",\"state\":\"NY\",\"city\":\"New York\","
+                + "\"street\":\"Broadway\",\"houseNumber\":\"123\",\"apartment\":\"\",\"postalCode\":\"10001\"}";
 
         mockMvc.perform(post("/customers")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -107,8 +132,9 @@ public class CustomerControllerTest {
 
     @Test
     void testAddCustomer_withInvalidPhone() throws Exception {
-        String jsonBody = "{\"name\":\"Gordon\",\"email\":\"gordon@example.com\","
-                + "\"birth\":\"2003-01-20\",\"phoneNumber\":\"INVALID_PHONE\",\"address\":\"Country, City, Different Street st. 01-10\"}";
+        String jsonBody = "{\"firstName\":\"Robert\", \"middleName\":\"James\", \"lastName\":\"Clinton\",\"email\":\"robert@example.com\","
+                + "\"birth\":\"2003-01-20\",\"phoneNumber\":\"INVALID_PHONE\",\"country\":\"USA\",\"state\":\"NY\",\"city\":\"New York\","
+                + "\"street\":\"Broadway\",\"houseNumber\":\"123\",\"apartment\":\"\",\"postalCode\":\"10001\"}";
 
         mockMvc.perform(post("/customers")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -118,8 +144,9 @@ public class CustomerControllerTest {
 
     @Test
     void testAddCustomer_withFutureBirthDate() throws Exception {
-        String jsonBody = "{\"name\":\"Gordon\",\"email\":\"gordon@example.com\","
-                + "\"birth\":\"2999-01-20\",\"phoneNumber\":\"+37100000000\",\"address\":\"Country, City, Different Street st. 01-10\"}";
+        String jsonBody = "{\"firstName\":\"Robert\", \"middleName\":\"James\", \"lastName\":\"Clinton\",\"email\":\"robert@example.com\","
+                + "\"birth\":\"2999-01-20\",\"phoneNumber\":\"INVALID_PHONE\",\"country\":\"USA\",\"state\":\"NY\",\"city\":\"New York\","
+                + "\"street\":\"Broadway\",\"houseNumber\":\"123\",\"apartment\":\"\",\"postalCode\":\"10001\"}";
 
         mockMvc.perform(post("/customers")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -154,36 +181,68 @@ public class CustomerControllerTest {
     void testUpdateCustomer() throws Exception {
         Customer mockCustomer = new Customer();
 
-        Long id = 1L;
-
-        mockCustomer.setName("Alex");
-        mockCustomer.setEmail("alex@example.com");
+        mockCustomer.setFirstName("Robert");
+        mockCustomer.setMiddleName("");
+        mockCustomer.setLastName("Clinton");
+        mockCustomer.setEmail("robert@example.com");
         mockCustomer.setBirth(LocalDate.of(2001, 05, 12));
         mockCustomer.setPhoneNumber("+37199999999");
-        mockCustomer.setAddress("Country, City, Street st. 99-99");
+        mockCustomer.setCountry("USA");
+        mockCustomer.setState("NY");
+        mockCustomer.setCity("New York");
+        mockCustomer.setStreet("Broadway");
+        mockCustomer.setHouseNumber("123");
+        mockCustomer.setApartment("");
+        mockCustomer.setPostalCode("10001");
 
-        String nameToUpdate = "Gordon";
-        String emailToUpdate = "gordon@example.com";
+
+        Long id = 1L;
+        String firstNameToUpdate = "Alex";
+        String middleNameToUpdate = "Gordon";
+        String lastNameToUpdate = "Smith";
+        String emailToUpdate = "alex@example.com";
         LocalDate birthToUpdate = LocalDate.of(2000,01,01);
         String phoneNumberToUpdate = "+37100000000";
-        String addressToUpdate = "Country, City, Street st. 00-00";
+        String countryToUpdate = "Canada";
+        String stateToUpdate = "ON";
+        String cityToUpdate = "Toronto";
+        String streetToUpdate = "Queen St";
+        String houseNumberToUpdate = "456";
+        String apartmentToUpdate = "10A";
+        String postalCodeToUpdate = "M5H 2N2";
 
         mockMvc.perform(put("/customers/" + id)
-                .param("name", nameToUpdate)
+                .param("firstName", firstNameToUpdate)
+                .param("middleName", middleNameToUpdate)
+                .param("lastName", lastNameToUpdate)
                 .param("email", emailToUpdate)
                 .param("birth", birthToUpdate.toString())
                 .param("phoneNumber", phoneNumberToUpdate)
-                .param("address", addressToUpdate)
+                .param("country", countryToUpdate)
+                .param("state", stateToUpdate)
+                .param("city", cityToUpdate)
+                .param("street", streetToUpdate)
+                .param("houseNumber", houseNumberToUpdate)
+                .param("apartment", apartmentToUpdate)
+                .param("postalCode", postalCodeToUpdate)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
                 verify(customerService).updateCustomer(
                         id,
-                        nameToUpdate,
+                        firstNameToUpdate,
+                        middleNameToUpdate,
+                        lastNameToUpdate,
                         emailToUpdate,
                         birthToUpdate,
                         phoneNumberToUpdate,
-                        addressToUpdate
+                        countryToUpdate,
+                        stateToUpdate,
+                        cityToUpdate,
+                        streetToUpdate,
+                        houseNumberToUpdate,
+                        apartmentToUpdate,
+                        postalCodeToUpdate
                 );
 
     }
