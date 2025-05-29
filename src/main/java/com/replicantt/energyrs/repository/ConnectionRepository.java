@@ -10,5 +10,4 @@ public interface ConnectionRepository extends JpaRepository<Connection, String> 
     Connection findByTypeAndStatus(String type, String status);
     Long deleteByMeterId(String meterId);
     boolean existsByMeterId(String meterId);
-
 }

@@ -47,9 +47,6 @@ public class Customer {
     private String postalCode;
     private String fullAddress;
 
-    // TODO разбить адрес на отдельные поля Country, State (если есть), City, Street, House Number, Apartment (если есть), Postal Code
-    // и сделать миграцию БД.
-    // Также разбить имя на First Name, Middle Name (если есть), Last Name и сделать миграцию БД.
     public Customer(
             Long id, 
             String firstName, 
